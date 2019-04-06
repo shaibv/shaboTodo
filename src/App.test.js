@@ -7,11 +7,9 @@ import {render, fireEvent, cleanup} from 'react-testing-library'
 const setup = () => {
   const utils = render(<List />)
   const addBtn = utils.getByText('Add')
-  const removeBtn = utils.getByText('Remove')
   const input = utils.getByTestId('todo-text')
   return {
     addBtn,
-    removeBtn,
     input,
     utils,
   }
@@ -24,7 +22,7 @@ it('renders without crashing', () => {
 });
 
 test('Adds an item', () => {
-  const {addBtn, removeBtn, input, utils} = setup();
+  const {addBtn, input, utils} = setup();
   fireEvent.change(input, {target: {value: 'newItem'}});
   expect(input.value).toBe('newItem');
   fireEvent.click(addBtn);
@@ -33,13 +31,19 @@ test('Adds an item', () => {
 });
 
 
-test('remove an item', () => {
-  const {addBtn, removeBtn, input, utils} = setup();
-  fireEvent.change(input, {target: {value: 'newItem'}});
-  expect(input.value).toBe('newItem');
+test('remove an item', async() => {
+  const {addBtn, input, utils} = setup();
+  fireEvent.change(input, {target: {value: 'test'}});
+  // expect(input.value).toBe('newItem');
   fireEvent.click(addBtn);
+  const removeBtn = utils.getByText('Remove')
+  
   fireEvent.click(removeBtn);
-  const item = utils.getByText('newItem')
+  await new Promise((resolve)=> setTimeout(() => {
+    resolve();
+  }, 1000));
+  const item = utils.getByText('test');
+  
   expect(!!item).toBeFalsy();
 });
 
